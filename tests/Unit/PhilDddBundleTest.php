@@ -8,8 +8,15 @@ use Phil\DddBundle\Application\Bus\CommandBus;
 use Phil\DddBundle\Application\Bus\CommandHandler;
 use Phil\DddBundle\Application\Bus\QueryBus;
 use Phil\DddBundle\Application\Bus\QueryHandler;
+use Phil\DddBundle\Infrastructure\HttpKernel\IdentifierValueResolver;
+use Phil\DddBundle\Infrastructure\Maker\MakeDddCommand;
+use Phil\DddBundle\Infrastructure\Maker\MakeDddContext;
+use Phil\DddBundle\Infrastructure\Maker\MakeDddEvent;
+use Phil\DddBundle\Infrastructure\Maker\MakeDddIdentifier;
+use Phil\DddBundle\Infrastructure\Maker\MakeDddQuery;
 use Phil\DddBundle\Infrastructure\Messenger\MessengerCommandBus;
 use Phil\DddBundle\Infrastructure\Messenger\MessengerQueryBus;
+use Phil\DddBundle\Infrastructure\Serializer\IdentifierNormalizer;
 use Phil\DddBundle\PhilDddBundle;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -52,6 +59,38 @@ final class PhilDddBundleTest extends TestCase
 
         self::assertSame(MessengerCommandBus::class, (string) $container->getAlias(CommandBus::class));
         self::assertSame(MessengerQueryBus::class, (string) $container->getAlias(QueryBus::class));
+    }
+
+    public function testTheValueResolverIsTaggedUnderItsClassName(): void
+    {
+        $container = $this->load([]);
+
+        self::assertTrue($container->hasDefinition(IdentifierValueResolver::class));
+        self::assertSame(
+            [['name' => IdentifierValueResolver::class]],
+            $container->getDefinition(IdentifierValueResolver::class)->getTag('controller.argument_value_resolver'),
+        );
+    }
+
+    public function testTheNormalizerIsTaggedAsASerializerNormalizer(): void
+    {
+        $container = $this->load([]);
+
+        self::assertTrue($container->hasDefinition(IdentifierNormalizer::class));
+        self::assertSame(
+            [[]],
+            $container->getDefinition(IdentifierNormalizer::class)->getTag('serializer.normalizer'),
+        );
+    }
+
+    public function testTheMakersAreTaggedAsMakerCommands(): void
+    {
+        $container = $this->load([]);
+
+        foreach ([MakeDddContext::class, MakeDddIdentifier::class, MakeDddCommand::class, MakeDddQuery::class, MakeDddEvent::class] as $maker) {
+            self::assertTrue($container->hasDefinition($maker), $maker);
+            self::assertSame([[]], $container->getDefinition($maker)->getTag('maker.command'), $maker);
+        }
     }
 
     /**

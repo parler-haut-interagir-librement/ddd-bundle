@@ -1,4 +1,4 @@
-<!-- phil-dev source-sha256=451f19bf678081c344d2b699e0b969050527940002098f39f77c46d56d63f8a7 -->
+<!-- phil-dev source-sha256=8a5cf325d5a0207e6a422557f24482bacb392777eeda0d6bd93914d5375566d3 -->
 # Le type d'identifiant Doctrine
 
 `Phil\DddBundle\Infrastructure\Doctrine\IdentifierType` est le type DBAL abstrait d'un identifiant : une classe
@@ -54,6 +54,10 @@ private OrderId $id;
 #[ORM\Column(type: 'order_id', nullable: true)]
 private ?OrderId $parentId = null;
 ```
+
+Associez les entités et les objets intégrés par les attributs de Doctrine, dans la couche Infrastructure de leur
+contexte, jamais par des fichiers de correspondance XML ou YAML : les classes du domaine restent libres de Doctrine, et
+la correspondance se trouve à côté de l'entité qu'elle décrit.
 
 ## La colonne, plateforme par plateforme
 

@@ -10,6 +10,9 @@
 | `symfony/messenger` | ^8.2 | The two bus adapters |
 | `symfony/uid` | ^8.2 | UUIDv7 identifiers |
 | `doctrine/dbal` | ^4.2, optional | Only for the identifier column type; versions below 4.2 are a declared `conflict` |
+| `symfony/http-kernel` | ^8.2, optional | Only for the controller argument resolver of identifiers, registered when it is installed; versions below 8.2 are a declared `conflict` |
+| `symfony/serializer` | ^8.2, optional | Only for the identifier normaliser, registered when it is installed; versions below 8.2 are a declared `conflict` |
+| `symfony/maker-bundle` | ^1.68, optional, in `require-dev` | Only for the `make:ddd:*` commands, registered when it is installed; versions below 1.68 are a declared `conflict` |
 
 `Domain\` depends on `symfony/uid` alone. An application that restricts what its own `Domain` layer may import
 can allow `Phil\DddBundle\Domain\` there without opening anything else: no container, no configuration, no I/O.
